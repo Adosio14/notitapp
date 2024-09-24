@@ -29,13 +29,6 @@ export default function Page() {
 function Content() {
   return (
     <View className="flex-1 px-6">
-      <TextInput
-        className="bg-light-lavender p-2 mt-8 mb-8 rounded-lg"
-        onChangeText={() => {}}
-        value="5"
-        placeholder="useless placeholder"
-        keyboardType="numeric"
-      />
       <NotesList />
       <Pressable
         className="absolute bottom-8 right-8 bg-lavender-dark rounded-full p-4 shadow-lg"
