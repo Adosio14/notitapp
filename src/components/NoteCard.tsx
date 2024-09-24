@@ -25,7 +25,7 @@ export default function NoteCard(
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <View className="bg-light-lavender rounded-lg overflow-hidden transition-all duration-300 ease-in-out">
+    <View className="bg-light-lavender rounded-lg my-2 overflow-hidden transition-all duration-300 ease-in-out">
       <View className="p-5 sm:p-6">
         <Text className="text-xl sm:text-2xl font-extrabold text-lavender mb-3">
           {title}
@@ -45,7 +45,7 @@ export default function NoteCard(
             onPress={() => setIsExpanded(!isExpanded)}
           >
             <Text className="text-sm font-medium text-indigo-light">
-              {isExpanded ? "Show less" : "Show more"}
+              {isExpanded ? "Ver menos" : "Ver menos"}
             </Text>
           </Pressable>
         )}
