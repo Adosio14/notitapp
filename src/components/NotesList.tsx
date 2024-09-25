@@ -10,13 +10,12 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { router } from "expo-router";
 
-// Define las interfaces
 interface Note {
-  id: number;
+  id: string;
   title: string;
   content: string;
-  updatedAt: string;
-  deletedAt?: string;
+  updatedAt: Date;
+  deletedAt?: Date;
 }
 
 interface NoteMonth {
@@ -32,25 +31,38 @@ interface NoteYear {
 export default function NotesList() {
   const [notesData, setNotesData] = useState<NoteYear[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchText, setSearchText] = useState(""); // Estado para el texto del filtro
+  const [searchText, setSearchText] = useState("");
+
+  const fetchNotes = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get("http://147.182.237.140:3000/note/1");
+      setNotesData(response.data);
+    } catch (error) {
+      console.error("Error fetching notes:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    // Fetch data from the API
-    const fetchNotes = async () => {
-      try {
-        const response = await axios.get("http://147.182.237.140:3000/note/1");
-        setNotesData(response.data); // Actualiza el estado con los datos de la API
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching notes:", error);
-        setLoading(false); // Detiene el loading en caso de error
-      }
-    };
-
     fetchNotes();
   }, []);
 
-  // Filtrar las notas por título
+  const deleteNote = async (id: string) => {
+    try {
+      const response = await axios.post(
+        `http://147.182.237.140:3000/note/${id}`
+      );
+      if (response.status === 200) {
+        // Llama a fetchNotes después de eliminar la nota
+        fetchNotes();
+      }
+    } catch (error) {
+      console.error("Error deleting note:", error);
+    }
+  };
+
   const filteredNotes = notesData
     .map((yearSection) => ({
       year: yearSection.year,
@@ -103,7 +115,9 @@ export default function NotesList() {
             content={item.content}
             title={item.title}
             timestamp={item.timestamp}
-            onDelete={() => {}}
+            onDelete={async () => {
+              await deleteNote(item.id);
+            }}
             onEdit={() => {
               router.push(`/notes/edit/${item.id}`);
             }}
