@@ -7,7 +7,7 @@ interface NoteCardProps {
   title: string;
   content: string;
   timestamp: string;
-  onEdit: (id: string) => void;
+  onEdit: () => void;
   onDelete: (id: string) => void;
 }
 
@@ -54,7 +54,7 @@ export default function NoteCard(
           <Text className="text-sm text-gray-400">{timestamp}</Text>
 
           <View className="flex flex-row space-x-3">
-            <Pressable className="mx-2" onPress={() => console.log("Editando")}>
+            <Pressable className="mx-2" onPress={() => onEdit()}>
               <Feather name="edit" size={24} color="#A594F9" />
             </Pressable>
 
