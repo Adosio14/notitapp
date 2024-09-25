@@ -129,6 +129,7 @@ export default function NotesList() {
               title={item.title}
               timestamp={item.timestamp}
               onDelete={async () => {
+                setLoading(true);
                 await deleteNote(item.id);
               }}
               onEdit={() => {
