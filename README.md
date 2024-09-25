@@ -82,7 +82,7 @@ Este proyecto se inspiró en la documentación y tutoriales de varios creadores 
 ### 📦 Instalación & Configuración
 
 1. Clona el repositorio:
-2. 
+   
    ```
    git clone https://github.com/Adosio14/notitapp.git
    cd notitapp
