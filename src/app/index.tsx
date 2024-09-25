@@ -66,7 +66,7 @@ function Content() {
         }}
       >
         {loading ? (
-          <ActivityIndicator size="large" color="#FFFFFF" />
+          <ActivityIndicator size="small" color="#FFFFFF" />
         ) : (
           <Text className="font-bold text-[#FFFFFF] text-lg ">Acceder</Text>
         )}
