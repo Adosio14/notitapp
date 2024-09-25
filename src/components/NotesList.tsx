@@ -9,6 +9,7 @@ import NoteCard from "./NoteCard";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { router } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface Note {
   id: string;
@@ -36,7 +37,10 @@ export default function NotesList() {
   const fetchNotes = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://147.182.237.140:3000/note/1");
+      const userId = await AsyncStorage.getItem("userId");
+      const response = await axios.get(
+        `http://147.182.237.140:3000/note/${userId}`
+      );
       setNotesData(response.data);
     } catch (error) {
       console.error("Error fetching notes:", error);
@@ -95,42 +99,52 @@ export default function NotesList() {
         keyboardType="default"
         placeholderTextColor="#A9A9A9"
       />
-
-      <SectionList
-        sections={filteredNotes.flatMap((yearSection) =>
-          yearSection.months.map((monthSection) => ({
-            title: `${monthSection.monthName} - ${yearSection.year}`,
-            data: monthSection.notes.map((note) => ({
-              id: note.id.toString(),
-              content: note.content,
-              title: note.title,
-              timestamp: new Date(note.updatedAt).toLocaleString(),
-            })),
-          }))
-        )}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <NoteCard
-            id={item.id}
-            content={item.content}
-            title={item.title}
-            timestamp={item.timestamp}
-            onDelete={async () => {
-              await deleteNote(item.id);
-            }}
-            onEdit={() => {
-              router.push(`/notes/edit/${item.id}`);
-            }}
-          />
-        )}
-        renderSectionHeader={({ section: { title } }) => (
-          <View className="h-14 flex bg-[#E5D9F2] items-center flex-row justify-between">
-            <Text className="font-bold text-indigo-bold text-3xl flex-1 items-center justify-center">
-              {title}
-            </Text>
-          </View>
-        )}
-      />
+      {filteredNotes.length != 0 ? (
+        <SectionList
+          sections={filteredNotes.flatMap((yearSection) =>
+            yearSection.months.map((monthSection) => ({
+              title: `${monthSection.monthName} - ${yearSection.year}`,
+              data: monthSection.notes.map((note) => ({
+                id: note.id.toString(),
+                content: note.content,
+                title: note.title,
+                timestamp: new Date(note.updatedAt).toLocaleString(),
+              })),
+            }))
+          )}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <NoteCard
+              id={item.id}
+              content={item.content}
+              title={item.title}
+              timestamp={item.timestamp}
+              onDelete={async () => {
+                await deleteNote(item.id);
+              }}
+              onEdit={() => {
+                router.push(`/notes/edit/${item.id}`);
+              }}
+            />
+          )}
+          renderSectionHeader={({ section: { title } }) => (
+            <View className="h-14 flex bg-[#E5D9F2] items-center flex-row justify-between">
+              <Text className="font-bold text-indigo-bold text-3xl flex-1 items-center justify-center">
+                {title}
+              </Text>
+            </View>
+          )}
+        />
+      ) : (
+        <View className="justify-center items-center">
+          <Text className="font-extrabold mb-2 text-indigo-bold text-3xl">
+            Que vacío está esto, no?
+          </Text>
+          <Text className="font-semibold mb-2 text-indigo-bold text-2xl">
+            Creá una nota tocando el botón de abajo!✍🏼
+          </Text>
+        </View>
+      )}
     </View>
   );
 }
