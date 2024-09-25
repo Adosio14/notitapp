@@ -11,7 +11,7 @@ import axios from "axios";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-interface Note {
+export interface Note {
   id: string;
   title: string;
   content: string;
@@ -123,7 +123,8 @@ export default function NotesList() {
                 await deleteNote(item.id);
               }}
               onEdit={() => {
-                router.push(`/notes/edit/${item.id}`);
+                console.log("editando");
+                router.push(`/notes/edit?data=${JSON.stringify(item)}`);
               }}
             />
           )}
