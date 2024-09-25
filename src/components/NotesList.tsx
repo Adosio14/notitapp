@@ -4,6 +4,7 @@ import {
   Text,
   TextInput,
   ActivityIndicator,
+  RefreshControl,
 } from "react-native";
 import NoteCard from "./NoteCard";
 import { useState, useEffect } from "react";
@@ -33,7 +34,11 @@ export default function NotesList() {
   const [notesData, setNotesData] = useState<NoteYear[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState("");
+  const [refreshing, setRefreshing] = useState(false);
 
+  useEffect(() => {
+    fetchNotes();
+  }, []);
   const fetchNotes = async () => {
     setLoading(true);
     try {
@@ -49,10 +54,6 @@ export default function NotesList() {
     }
   };
 
-  useEffect(() => {
-    fetchNotes();
-  }, []);
-
   const deleteNote = async (id: string) => {
     try {
       const response = await axios.post(
@@ -66,7 +67,12 @@ export default function NotesList() {
       console.error("Error deleting note:", error);
     }
   };
-
+  const onRefresh = async () => {
+    setRefreshing(true);
+    setNotesData([]);
+    fetchNotes();
+    setRefreshing(false);
+  };
   const filteredNotes = notesData
     .map((yearSection) => ({
       year: yearSection.year,
@@ -101,6 +107,9 @@ export default function NotesList() {
       />
       {filteredNotes.length != 0 ? (
         <SectionList
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
           sections={filteredNotes.flatMap((yearSection) =>
             yearSection.months.map((monthSection) => ({
               title: `${monthSection.monthName} - ${yearSection.year}`,
